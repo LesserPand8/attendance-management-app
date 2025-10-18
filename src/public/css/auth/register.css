@@ -1,40 +1,35 @@
-/* PC（1400-1540px）用 */
-@media (min-width: 1400px) and (max-width: 1540px) {
-    .register-form__content {
-        width: 680px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        margin: 50px auto;
-    }
-
-    .register-form__heading {
-        font-family: Inter;
-        font-weight: 700;
-        font-size: 30px;
-        line-height: 100%;
-        text-align: center;
-    }
+.register-form__content {
+    width: 680px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 50px auto;
 }
 
-@media (min-width: 768px) and (max-width: 850px) {
-    .register-form__content {
-        width: 480px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        margin: 50px auto;
-    }
+.register-form__heading {
+    font-family: Inter;
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 100%;
+    text-align: center;
+}
 
-    .register-form__heading {
-        font-family: Inter;
-        font-weight: 700;
-        font-size: 25px;
-        line-height: 100%;
-        text-align: center;
-    }
+.register-form__content {
+    width: 480px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 50px auto;
+}
+
+.register-form__heading {
+    font-family: Inter;
+    font-weight: 700;
+    font-size: 25px;
+    line-height: 100%;
+    text-align: center;
 }
 
 .form {
@@ -83,7 +78,7 @@
     line-height: 100%;
     text-align: center;
     vertical-align: middle;
-    background: #ff5555;
+    background: #000000;
     border-radius: 4px;
     border: none;
 }

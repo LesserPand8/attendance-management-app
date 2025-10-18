@@ -1,0 +1,56 @@
+.header {
+    background-color: #000000;
+    padding: 1rem;
+}
+
+.header-utilities {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-nav {
+    display: flex;
+    align-items: center;
+}
+
+.header-nav__button-login {
+    color: #ffffff;
+    text-decoration: none;
+    margin-left: 5px;
+    margin-right: 5px;
+    font-family: Inter;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 100%;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.header-nav__button-logout {
+    color: #ffffff;
+    margin-left: 5px;
+    margin-right: 5px;
+    font-family: Inter;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 100%;
+    text-align: center;
+    vertical-align: middle;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.header-nav__link {
+    color: #ffffff;
+    text-decoration: none;
+    margin-left: 10px;
+    margin-right: 18px;
+    font-family: Inter;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 100%;
+    text-align: center;
+    vertical-align: middle;
+}
