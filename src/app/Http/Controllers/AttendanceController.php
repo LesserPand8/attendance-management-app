@@ -41,7 +41,7 @@ class AttendanceController extends Controller
 
         // end_timeが入っている場合（退勤済み）
         if ($todayWork->end_time) {
-            return '退勤済み';
+            return '退勤済';
         }
 
         // start_timeが入っている場合、休憩中かどうかをチェック

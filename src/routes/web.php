@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\AttendanceListController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,3 +18,4 @@ use App\Http\Controllers\AttendanceController;
 Route::get('/', [AttendanceController::class, 'attendance'])->middleware('auth');
 Route::get('/attendance', [AttendanceController::class, 'attendance'])->middleware('auth');
 Route::post('/attendance', [AttendanceController::class, 'registerAttendance']);
+Route::get('/attendance/list', [AttendanceListController::class, 'attendanceList'])->middleware('auth');
