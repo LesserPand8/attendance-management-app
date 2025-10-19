@@ -54,7 +54,7 @@
     right: 0;
 }
 
-img {
+.calendar-icon {
     width: 24px;
     height: 24px;
 }
@@ -94,6 +94,17 @@ th {
 td {
     text-align: center;
     padding: 8px 0;
+}
+
+.break-item {
+    margin-bottom: 2px;
+    font-size: 14px;
+}
+
+.break-type {
+    font-size: 12px;
+    color: #666;
+    margin-right: 4px;
 }
 
 .detail-link {

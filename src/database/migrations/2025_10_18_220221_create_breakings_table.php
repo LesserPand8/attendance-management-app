@@ -19,8 +19,6 @@ class CreateBreakingsTable extends Migration
             $table->foreignId('work_id');
             $table->time('start_time')->nullable();
             $table->time('end_time')->nullable();
-            $table->time('second_start_time')->nullable();
-            $table->time('second_end_time')->nullable();
             $table->timestamp('created_at')->useCurrent()->nullable();
             $table->timestamp('updated_at')->useCurrent()->nullable();
         });

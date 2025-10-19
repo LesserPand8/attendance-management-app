@@ -13,7 +13,7 @@
                 <a href="/attendance/list?month={{ \Carbon\Carbon::parse($currentMonth)->subMonth()->format('Y-m') }}" class="nav-button">
                     ←前月</a>
                 <span class="current-month">
-                    <img src="{{ asset('storage/images/calendar.png') }}">
+                    <img class="calendar-icon" src="{{ asset('storage/images/calendar.png') }}">
                     {{ \Carbon\Carbon::parse($currentMonth)->format('Y/n') }}
                 </span>
                 <a href="/attendance/list?month={{ \Carbon\Carbon::parse($currentMonth)->addMonth()->format('Y-m') }}" class="nav-button">翌月→</a>
