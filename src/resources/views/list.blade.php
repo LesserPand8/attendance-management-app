@@ -34,13 +34,7 @@
                 <td>{{ $attendance->start_time ? \Carbon\Carbon::parse($attendance->start_time)->format('H:i') : '' }}</td>
                 <td>{{ $attendance->end_time ? \Carbon\Carbon::parse($attendance->end_time)->format('H:i') : '' }}</td>
                 <td>
-                    @if($attendance->break_times && count($attendance->break_times) > 0)
-                    @foreach($attendance->break_times as $break)
-                    {{ \Carbon\Carbon::parse($break['start'])->format('H:i') }} ~ {{ \Carbon\Carbon::parse($break['end'])->format('H:i') }}<br>
-                    @endforeach
-                    @else
-                    {{ '' }}
-                    @endif
+                    {{ $attendance->total_break_time ?? '' }}
                 </td>
                 <td>
                     {{ $attendance->total_time ?? '' }}

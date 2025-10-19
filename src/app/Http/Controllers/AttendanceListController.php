@@ -45,6 +45,19 @@ class AttendanceListController extends Controller
                         ];
                     });
 
+                // 休憩時間の合計を計算
+                $totalBreakMinutes = 0;
+                foreach ($breakTimes as $break) {
+                    $breakStart = Carbon::parse($break['start']);
+                    $breakEnd = Carbon::parse($break['end']);
+                    $totalBreakMinutes += $breakEnd->diffInMinutes($breakStart);
+                }
+
+                // 休憩時間合計を時:分形式にフォーマット
+                $breakHours = floor($totalBreakMinutes / 60);
+                $breakMinutes = $totalBreakMinutes % 60;
+                $totalBreakTime = $totalBreakMinutes > 0 ? sprintf('%02d:%02d', $breakHours, $breakMinutes) : '';
+
                 // 合計勤務時間を計算
                 $totalTime = null;
                 if ($work->start_time && $work->end_time) {
@@ -53,14 +66,7 @@ class AttendanceListController extends Controller
                     $totalMinutes = $end->diffInMinutes($start);
 
                     // 休憩時間を差し引く
-                    $breakMinutes = 0;
-                    foreach ($breakTimes as $break) {
-                        $breakStart = Carbon::parse($break['start']);
-                        $breakEnd = Carbon::parse($break['end']);
-                        $breakMinutes += $breakEnd->diffInMinutes($breakStart);
-                    }
-
-                    $workMinutes = $totalMinutes - $breakMinutes;
+                    $workMinutes = $totalMinutes - $totalBreakMinutes;
                     $hours = floor($workMinutes / 60);
                     $minutes = $workMinutes % 60;
                     $totalTime = sprintf('%02d:%02d', $hours, $minutes);
@@ -72,6 +78,7 @@ class AttendanceListController extends Controller
                     'start_time' => $work->start_time,
                     'end_time' => $work->end_time,
                     'break_times' => $breakTimes,
+                    'total_break_time' => $totalBreakTime,
                     'total_time' => $totalTime,
                 ]);
             } else {
@@ -82,6 +89,7 @@ class AttendanceListController extends Controller
                     'start_time' => null,
                     'end_time' => null,
                     'break_times' => collect(),
+                    'total_break_time' => '',
                     'total_time' => null,
                 ]);
             }
