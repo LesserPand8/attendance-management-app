@@ -19,3 +19,5 @@ Route::get('/', [AttendanceController::class, 'attendance'])->middleware('auth')
 Route::get('/attendance', [AttendanceController::class, 'attendance'])->middleware('auth');
 Route::post('/attendance', [AttendanceController::class, 'registerAttendance']);
 Route::get('/attendance/list', [AttendanceListController::class, 'attendanceList'])->middleware('auth');
+
+Route::get('/attendance/detail/{id}', [AttendanceListController::class, 'attendanceDetail'])->middleware('auth');
