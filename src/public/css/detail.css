@@ -1,0 +1,60 @@
+.content {
+    background-color: #f4f4f4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.detail {
+    width: 850px;
+    margin: 30px auto 50px;
+}
+
+.detail-title {
+    font-family: Inter;
+    font-weight: 700;
+    font-size: 28px;
+    color: #000000;
+    border-left: 8px solid #000000;
+    padding-left: 15px;
+}
+
+.attendance-detail-table {
+    background-color: #ffffff;
+    color: #737373;
+    border-radius: 10px;
+    width: 100%;
+    font-family: Inter;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.attendance-detail-row,
+.comment-row {
+}
+
+.attendance-detail-row {
+    border-bottom: 2px solid #e1e1e1;
+}
+
+td {
+    text-align: center;
+    padding: 15px 0;
+}
+
+th {
+    padding: 15px 0;
+    width: 150px;
+}
+
+.submit-button {
+    margin: 30px 0 30px auto;
+    width: 120px;
+    font-family: Inter;
+    font-weight: 700;
+    font-size: 15px;
+    color: #ffffff;
+    background-color: #000000;
+    border-radius: 5px;
+    padding: 10px 0;
+}
