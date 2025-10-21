@@ -21,3 +21,4 @@ Route::get('/attendance', [AttendanceController::class, 'attendance'])->middlewa
 Route::post('/attendance', [AttendanceController::class, 'registerAttendance']);
 Route::get('/attendance/list', [AttendanceListController::class, 'attendanceList'])->middleware('auth');
 Route::get('/attendance/detail/{id}', [AttendanceDetailController::class, 'attendanceDetail'])->middleware('auth');
+Route::post('/attendance/detail/{id}', [AttendanceDetailController::class, 'updateAttendanceDetail'])->middleware('auth');

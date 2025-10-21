@@ -8,7 +8,8 @@
 <div class="content">
     <div class="detail">
         <h2 class="detail-title">勤怠詳細</h2>
-        <form class="attendance-detail-form" action="post">
+        <form class="attendance-detail-form" action="/attendance/detail/{{ $attendanceData->id }}" method="post">
+            @csrf
             <table class="attendance-detail-table">
                 <tr class="attendance-detail-row">
                     <th>名前</th>
@@ -67,7 +68,7 @@
                 <tr class="comment-row">
                     <th>備考</th>
                     <td>
-                        <input class="comment-input" type="text">
+                        <input class="comment-input" type="text" name="reason">
                     </td>
                 </tr>
             </table>
