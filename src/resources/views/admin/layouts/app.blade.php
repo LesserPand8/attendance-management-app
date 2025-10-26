@@ -15,18 +15,18 @@
     <header class="header">
         <div class="header__inner">
             <div class="header-utilities">
-                <a class="header__logo" href="/attendance">
+                <a class="header__logo" href="/admin/attendance/list">
                     <img src="{{ asset('storage/images/logo.svg') }}" alt="coachtech">
                 </a>
                 <div class="header-nav">
                     <div class="header-nav__item">
-                        <a class="header-nav__link" href="/attendance">勤怠</a>
+                        <a class="header-nav__link" href="/admin/attendance/list">勤怠一覧</a>
                     </div>
                     <div class="header-nav__item">
-                        <a class="header-nav__link" href="/attendance/list">勤怠一覧</a>
+                        <a class="header-nav__link" href="/admin/staff/list">スタッフ一覧</a>
                     </div>
                     <div class="header-nav__item">
-                        <a class="header-nav__link" href="/stamp_correction_request/list">申請</a>
+                        <a class="header-nav__link" href="/admin/attendance/{id}">申請一覧</a>
                     </div>
                     @if (!Auth::check())
                     <div class="header-nav__item">

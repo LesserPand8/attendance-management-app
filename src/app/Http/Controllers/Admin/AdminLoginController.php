@@ -24,7 +24,7 @@ class AdminLoginController extends Controller
         $credentials = $request->only(['email', 'password']);
 
         if (Auth::guard('admin')->attempt($credentials)) {
-            return redirect()->route('admin.list')->with([
+            return redirect()->route('admin.attendance.list')->with([
                 'login_msg' => 'ログインしました。',
             ]);
         }

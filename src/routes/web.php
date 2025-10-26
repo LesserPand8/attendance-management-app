@@ -6,6 +6,9 @@ use App\Http\Controllers\AttendanceListController;
 use App\Http\Controllers\AttendanceDetailController;
 use App\Http\Controllers\ApplicationListController;
 use App\Http\Controllers\Admin\AdminLoginController;
+use App\Http\Controllers\Admin\AdminStaffListController;
+use App\Http\Controllers\Admin\AdminAttendanceListController;
+use App\Http\Controllers\Admin\AdminAttendanceDetailController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,7 +50,13 @@ Route::group(['prefix' => 'admin'], function () {
     Route::middleware(['auth:admin'])->group(function () {
         // ログアウト
         Route::post('logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
-        Route::get('list', fn() => view('admin.list'))
-            ->name('admin.list');
+        Route::get('attendance/list', [AdminAttendanceListController::class, 'attendanceList'])
+            ->name('admin.attendance.list');
+        Route::get('attendance/{id}', [AdminAttendanceDetailController::class, 'attendanceDetail']);
+        Route::post('attendance/{id}', [AdminAttendanceDetailController::class, 'updateAttendanceDetail']);
+        Route::get('staff/list', [AdminStaffListController::class, 'staffList']);
+        Route::get('attendance/staff/{staffId}', [AdminStaffListController::class, 'staffAttendanceDetail']);
     });
 });
+
+Route::middleware(['auth:admin'])->group(function () {});

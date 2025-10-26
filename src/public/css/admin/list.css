@@ -17,7 +17,7 @@
     padding-left: 15px;
 }
 
-.list-month {
+.list-day {
     background-color: #ffffff;
     color: #737373;
     margin: 40px 0 40px;
@@ -29,7 +29,7 @@
     position: relative;
 }
 
-.month-navigation {
+.day-navigation {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -59,7 +59,7 @@
     height: 24px;
 }
 
-.current-month {
+.current-day {
     font-family: Inter;
     font-weight: 700;
     font-size: 18px;

@@ -40,7 +40,6 @@
                     {{ $attendance->total_time ?? '' }}
                 </td>
                 <td>
-                    <!-- <button class="btn btn-primary">詳細</button> -->
                     <a class="detail-link" href="/attendance/detail/{{ $attendance->id }}">詳細</a>
                 </td>
             </tr>

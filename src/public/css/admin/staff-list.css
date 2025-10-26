@@ -1,0 +1,52 @@
+.content {
+    display: flex;
+    background-color: #f4f4f4;
+}
+
+.staff-list {
+    width: 850px;
+    margin: 30px auto 50px;
+}
+
+.staff-list-title {
+    font-family: Inter;
+    font-weight: 700;
+    font-size: 28px;
+    color: #000000;
+    border-left: 8px solid #000000;
+    padding-left: 15px;
+}
+
+.staff-table {
+    background-color: #ffffff;
+    color: #737373;
+    border-radius: 10px;
+    width: 100%;
+    font-family: Inter;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.staff-table-row {
+    border-bottom: 2px solid #e1e1e1;
+}
+
+th {
+    padding: 10px 20px;
+}
+
+td {
+    text-align: center;
+    padding: 10px 20px;
+    max-width: 150px;
+}
+
+.detail-link {
+    font-family: Inter;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 100%;
+    letter-spacing: 15%;
+    text-decoration: none;
+    color: #000000;
+}
