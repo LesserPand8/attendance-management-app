@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\AdminLoginController;
 use App\Http\Controllers\Admin\AdminStaffListController;
 use App\Http\Controllers\Admin\AdminAttendanceListController;
 use App\Http\Controllers\Admin\AdminAttendanceDetailController;
+use App\Http\Controllers\Admin\AdminStaffAttendanceListController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,8 +56,6 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('attendance/{id}', [AdminAttendanceDetailController::class, 'attendanceDetail']);
         Route::post('attendance/{id}', [AdminAttendanceDetailController::class, 'updateAttendanceDetail']);
         Route::get('staff/list', [AdminStaffListController::class, 'staffList']);
-        Route::get('attendance/staff/{staffId}', [AdminStaffListController::class, 'staffAttendanceDetail']);
+        Route::get('attendance/staff/{staffId}', [AdminStaffAttendanceListController::class, 'staffAttendanceList']);
     });
 });
-
-Route::middleware(['auth:admin'])->group(function () {});
