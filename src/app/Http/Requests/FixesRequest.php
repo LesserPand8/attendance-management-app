@@ -82,7 +82,7 @@ class FixesRequest extends FormRequest
 
                 // 1. 出勤時間が退勤時間より後、または退勤時間が出勤時間より前
                 if ($start->greaterThanOrEqualTo($end)) {
-                    $validator->errors()->add('work_time', '出勤時間もしくは退勤時間が不適切な値です');
+                    $validator->errors()->add('work_time', '出勤時間が不適切な値です');
                 }
             } catch (\Exception $e) {
                 $validator->errors()->add('work_time', '時間は○○:○○の形式で入力してください');

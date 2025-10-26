@@ -46,9 +46,9 @@
                             <div class="time-display_end">{{ $attendanceData->end_time ? \Carbon\Carbon::parse($attendanceData->end_time)->format('H:i') : '' }}</div>
                         </div>
                         @else
-                        <input class="start-time-input" type="text" name="start_time" value="{{ $attendanceData->start_time ? \Carbon\Carbon::parse($attendanceData->start_time)->format('H:i') : '' }}" placeholder="">
+                        <input class="start-time-input" type="text" name="start_time" value="{{ old('start_time', $attendanceData->start_time ? \Carbon\Carbon::parse($attendanceData->start_time)->format('H:i') : '') }}" placeholder="">
                         ～
-                        <input class="end-time-input" type="text" name="end_time" value="{{ $attendanceData->end_time ? \Carbon\Carbon::parse($attendanceData->end_time)->format('H:i') : '' }}" placeholder="">
+                        <input class="end-time-input" type="text" name="end_time" value="{{ old('end_time', $attendanceData->end_time ? \Carbon\Carbon::parse($attendanceData->end_time)->format('H:i') : '') }}" placeholder="">
                         @endif
                     </td>
                 </tr>
@@ -64,9 +64,9 @@
                             <div class="time-display_end">{{ \Carbon\Carbon::parse($break['end'])->format('H:i') }}</div>
                         </div>
                         @else
-                        <input class="start-time-input" type="text" name="break_start_{{ $break['number'] }}" value="{{ \Carbon\Carbon::parse($break['start'])->format('H:i') }}" placeholder="">
+                        <input class="start-time-input" type="text" name="break_start_{{ $break['number'] }}" value="{{ old('break_start_' . $break['number'], \Carbon\Carbon::parse($break['start'])->format('H:i')) }}" placeholder="">
                         ～
-                        <input class="end-time-input" type="text" name="break_end_{{ $break['number'] }}" value="{{ \Carbon\Carbon::parse($break['end'])->format('H:i') }}" placeholder="">
+                        <input class="end-time-input" type="text" name="break_end_{{ $break['number'] }}" value="{{ old('break_end_' . $break['number'], \Carbon\Carbon::parse($break['end'])->format('H:i')) }}" placeholder="">
                         @endif
                     </td>
                 </tr>
@@ -76,9 +76,9 @@
                 <tr class="attendance-detail-row">
                     <th>休憩{{ count($attendanceData->break_times) + 1 }}</th>
                     <td>
-                        <input class="start-time-input" type="text" name="break_start_{{ count($attendanceData->break_times) + 1 }}" placeholder="">
+                        <input class="start-time-input" type="text" name="break_start_{{ count($attendanceData->break_times) + 1 }}" value="{{ old('break_start_' . (count($attendanceData->break_times) + 1)) }}" placeholder="">
                         ～
-                        <input class="end-time-input" type="text" name="break_end_{{ count($attendanceData->break_times) + 1 }}" placeholder="">
+                        <input class="end-time-input" type="text" name="break_end_{{ count($attendanceData->break_times) + 1 }}" value="{{ old('break_end_' . (count($attendanceData->break_times) + 1)) }}" placeholder="">
                     </td>
                 </tr>
                 @endif
@@ -88,9 +88,9 @@
                 <tr class="attendance-detail-row">
                     <th>休憩</th>
                     <td>
-                        <input class="start-time-input" type="text" name="break_start_1" placeholder="">
+                        <input class="start-time-input" type="text" name="break_start_1" value="{{ old('break_start_1') }}" placeholder="">
                         ～
-                        <input class="end-time-input" type="text" name="break_end_1" placeholder="">
+                        <input class="end-time-input" type="text" name="break_end_1" value="{{ old('break_end_1') }}" placeholder="">
                     </td>
                 </tr>
                 @endif
@@ -103,7 +103,7 @@
                             <div class="pending-reason">{{ $pendingFix->reason }}</div>
                         </div>
                         @else
-                        <input class="comment-input" type="text" name="reason">
+                        <input class="comment-input" type="text" name="reason" value="{{ old('reason') }}">
                         @endif
                     </td>
                 </tr>

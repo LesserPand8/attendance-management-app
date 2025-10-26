@@ -12,15 +12,57 @@ class AttendanceDetailController extends Controller
 {
     public function attendanceDetail($id)
     {
-        // 勤怠記録を取得
-        $attendance = DB::table('works')
-            ->join('users', 'works.user_id', '=', 'users.id')
-            ->where('works.id', $id)
-            ->select('works.*', 'users.name as user_name')
-            ->first();
+        $user = auth()->user();
 
-        if (!$attendance) {
-            return redirect('/attendance/list')->with('error', '勤怠記録が見つかりません');
+        // 新しい記録の場合（new_YYYY-MM-DD形式）
+        if (str_starts_with($id, 'new_')) {
+            $date = str_replace('new_', '', $id);
+
+            // 日付形式の検証
+            try {
+                $targetDate = Carbon::parse($date);
+            } catch (\Exception $e) {
+                return redirect('/attendance/list')->with('error', '無効な日付です');
+            }
+
+            // 該当日の既存記録を確認
+            $existingWork = DB::table('works')
+                ->where('user_id', $user->id)
+                ->where('work_date', $targetDate->format('Y-m-d'))
+                ->first();
+
+            if ($existingWork) {
+                // 既存記録がある場合は通常の詳細ページにリダイレクト
+                return redirect('/attendance/detail/' . $existingWork->id);
+            }
+
+            // 新しい記録を作成
+            $workId = DB::table('works')->insertGetId([
+                'user_id' => $user->id,
+                'work_date' => $targetDate->format('Y-m-d'),
+                'start_time' => null,
+                'end_time' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            // 作成した記録を取得
+            $attendance = DB::table('works')
+                ->join('users', 'works.user_id', '=', 'users.id')
+                ->where('works.id', $workId)
+                ->select('works.*', 'users.name as user_name')
+                ->first();
+        } else {
+            // 既存記録の場合
+            $attendance = DB::table('works')
+                ->join('users', 'works.user_id', '=', 'users.id')
+                ->where('works.id', $id)
+                ->select('works.*', 'users.name as user_name')
+                ->first();
+
+            if (!$attendance) {
+                return redirect('/attendance/list')->with('error', '勤怠記録が見つかりません');
+            }
         }
 
         // 休憩時間を取得
@@ -68,11 +110,31 @@ class AttendanceDetailController extends Controller
 
     public function updateAttendanceDetail(FixesRequest $request, $id)
     {
-        // 勤怠記録を取得
-        $attendance = DB::table('works')->where('id', $id)->first();
+        $user = auth()->user();
 
-        if (!$attendance) {
-            return redirect('/attendance/list')->with('error', '勤怠記録が見つかりません');
+        // 新しい記録の場合（new_YYYY-MM-DD形式）の処理
+        if (str_starts_with($id, 'new_')) {
+            $date = str_replace('new_', '', $id);
+
+            // 該当日の既存記録を取得（作成済みの場合）
+            $attendance = DB::table('works')
+                ->where('user_id', $user->id)
+                ->where('work_date', $date)
+                ->first();
+
+            if (!$attendance) {
+                return redirect('/attendance/list')->with('error', '勤怠記録が見つかりません');
+            }
+
+            // 実際のIDに変更して処理を続行
+            $id = $attendance->id;
+        } else {
+            // 既存記録の場合
+            $attendance = DB::table('works')->where('id', $id)->first();
+
+            if (!$attendance) {
+                return redirect('/attendance/list')->with('error', '勤怠記録が見つかりません');
+            }
         }
 
         DB::beginTransaction();

@@ -84,7 +84,7 @@ class AttendanceListController extends Controller
             } else {
                 // 勤怠記録がない日
                 $attendances->push((object)[
-                    'id' => null,
+                    'id' => 'new_' . $dateStr, // 日付を含む特別な識別子
                     'date' => $dateStr,
                     'start_time' => null,
                     'end_time' => null,
