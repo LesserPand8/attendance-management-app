@@ -8,6 +8,16 @@
 <div class="content">
     <div class="detail">
         <h2 class="detail-title">勤怠詳細</h2>
+
+        <!-- エラーメッセージの表示 -->
+        @if ($errors->any())
+        <div class="error-messages">
+            @foreach ($errors->all() as $error)
+            <div class="error-message">{{ $error }}</div>
+            @endforeach
+        </div>
+        @endif
+
         <form class="attendance-detail-form" action="/attendance/detail/{{ $attendanceData->id }}" method="post">
             @csrf
             <table class="attendance-detail-table">

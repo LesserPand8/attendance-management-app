@@ -12,6 +12,12 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Http\Requests\LoginRequest as FortifyLoginRequest;
+use App\Http\Requests\LoginRequest;
+
+use Laravel\Fortify\Contracts\RegisterResponse as RegisterResponseContract;
+use App\Http\Responses\RegisterResponse;
+
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -44,5 +50,12 @@ class FortifyServiceProvider extends ServiceProvider
 
             return Limit::perMinute(10)->by($email . $request->ip());
         });
+
+        // メール認証画面のカスタムViewをバインド
+        Fortify::verifyEmailView(function () {
+            return view('auth.verify');
+        });
+
+        $this->app->bind(FortifyLoginRequest::class, LoginRequest::class);
     }
 }
