@@ -115,5 +115,26 @@ th {
 }
 
 .error-message {
-    color: red;
+    color: #ff000080;
+}
+
+.pending-message {
+    color: #ff000080;
+    margin-top: 20px;
+    align-self: flex-end;
+}
+
+.time-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.time-display_start {
+    padding-left: 20px;
+    padding-right: 60px;
+}
+
+.time-display_end {
+    padding-left: 60px;
 }

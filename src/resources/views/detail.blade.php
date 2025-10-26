@@ -39,9 +39,17 @@
                 <tr class="attendance-detail-row">
                     <th>出勤・退勤</th>
                     <td>
+                        @if($hasPendingFix)
+                        <div class="time-container">
+                            <div class="time-display_start">{{ $attendanceData->start_time ? \Carbon\Carbon::parse($attendanceData->start_time)->format('H:i') : '' }}</div>
+                            ～
+                            <div class="time-display_end">{{ $attendanceData->end_time ? \Carbon\Carbon::parse($attendanceData->end_time)->format('H:i') : '' }}</div>
+                        </div>
+                        @else
                         <input class="start-time-input" type="text" name="start_time" value="{{ $attendanceData->start_time ? \Carbon\Carbon::parse($attendanceData->start_time)->format('H:i') : '' }}" placeholder="">
                         ～
                         <input class="end-time-input" type="text" name="end_time" value="{{ $attendanceData->end_time ? \Carbon\Carbon::parse($attendanceData->end_time)->format('H:i') : '' }}" placeholder="">
+                        @endif
                     </td>
                 </tr>
                 @if($attendanceData->break_times && count($attendanceData->break_times) > 0)
@@ -49,13 +57,22 @@
                 <tr class="attendance-detail-row">
                     <th>休憩{{ $break['number'] > 1 ? $break['number'] : '' }}</th>
                     <td>
+                        @if($hasPendingFix)
+                        <div class="time-container">
+                            <div class="time-display_start">{{ \Carbon\Carbon::parse($break['start'])->format('H:i') }}</div>
+                            ～
+                            <div class="time-display_end">{{ \Carbon\Carbon::parse($break['end'])->format('H:i') }}</div>
+                        </div>
+                        @else
                         <input class="start-time-input" type="text" name="break_start_{{ $break['number'] }}" value="{{ \Carbon\Carbon::parse($break['start'])->format('H:i') }}" placeholder="">
                         ～
                         <input class="end-time-input" type="text" name="break_end_{{ $break['number'] }}" value="{{ \Carbon\Carbon::parse($break['end'])->format('H:i') }}" placeholder="">
+                        @endif
                     </td>
                 </tr>
                 @endforeach
-                <!-- 新しい休憩時間入力フィールド -->
+                @if(!$hasPendingFix)
+                <!-- 新しい休憩時間入力フィールド（承認待ちでない場合のみ表示） -->
                 <tr class="attendance-detail-row">
                     <th>休憩{{ count($attendanceData->break_times) + 1 }}</th>
                     <td>
@@ -64,8 +81,10 @@
                         <input class="end-time-input" type="text" name="break_end_{{ count($attendanceData->break_times) + 1 }}" placeholder="">
                     </td>
                 </tr>
+                @endif
                 @else
-                <!-- 休憩記録がない場合は最初の入力フィールドを表示 -->
+                @if(!$hasPendingFix)
+                <!-- 休憩記録がない場合は最初の入力フィールドを表示（承認待ちでない場合のみ） -->
                 <tr class="attendance-detail-row">
                     <th>休憩</th>
                     <td>
@@ -75,14 +94,25 @@
                     </td>
                 </tr>
                 @endif
+                @endif
                 <tr class="comment-row">
                     <th>備考</th>
                     <td>
+                        @if($hasPendingFix)
+                        <div class="pending-reason-container">
+                            <div class="pending-reason">{{ $pendingFix->reason }}</div>
+                        </div>
+                        @else
                         <input class="comment-input" type="text" name="reason">
+                        @endif
                     </td>
                 </tr>
             </table>
+            @if(!$hasPendingFix)
             <button type="submit" class="submit-button">修正</button>
+            @else
+            <div class="pending-message">*承認待ちのため修正できません。</div>
+            @endif
         </form>
     </div>
 </div>

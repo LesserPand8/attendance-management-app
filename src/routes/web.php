@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AttendanceListController;
 use App\Http\Controllers\AttendanceDetailController;
+use App\Http\Controllers\ApplicationListController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,9 +17,12 @@ use App\Http\Controllers\AttendanceDetailController;
 |
 */
 
-Route::get('/', [AttendanceController::class, 'attendance'])->middleware('auth');
-Route::get('/attendance', [AttendanceController::class, 'attendance'])->middleware('auth');
-Route::post('/attendance', [AttendanceController::class, 'registerAttendance']);
-Route::get('/attendance/list', [AttendanceListController::class, 'attendanceList'])->middleware('auth');
-Route::get('/attendance/detail/{id}', [AttendanceDetailController::class, 'attendanceDetail'])->middleware('auth');
-Route::post('/attendance/detail/{id}', [AttendanceDetailController::class, 'updateAttendanceDetail'])->middleware('auth');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/', [AttendanceController::class, 'attendance']);
+    Route::get('/attendance', [AttendanceController::class, 'attendance']);
+    Route::post('/attendance', [AttendanceController::class, 'registerAttendance']);
+    Route::get('/attendance/list', [AttendanceListController::class, 'attendanceList']);
+    Route::get('/attendance/detail/{id}', [AttendanceDetailController::class, 'attendanceDetail']);
+    Route::post('/attendance/detail/{id}', [AttendanceDetailController::class, 'updateAttendanceDetail']);
+    Route::get('/stamp_correction_request/list', [ApplicationListController::class, 'stampCorrectionRequestList']);
+});

@@ -45,6 +45,14 @@ class AttendanceDetailController extends Controller
         $breakMinutes = $totalBreakMinutes % 60;
         $totalBreakTime = $totalBreakMinutes > 0 ? sprintf('%02d:%02d', $breakHours, $breakMinutes) : '00:00';
 
+        // 承認待ちの修正申請があるかチェック
+        $pendingFix = DB::table('fixes')
+            ->where('work_id', $id)
+            ->where('status', '承認待ち')
+            ->first();
+
+        $hasPendingFix = !is_null($pendingFix);
+
         $attendanceData = (object)[
             'id' => $attendance->id,
             'user_name' => $attendance->user_name,
@@ -55,7 +63,7 @@ class AttendanceDetailController extends Controller
             'total_break_time' => $totalBreakTime
         ];
 
-        return view('detail', compact('attendanceData'));
+        return view('detail', compact('attendanceData', 'hasPendingFix', 'pendingFix'));
     }
 
     public function updateAttendanceDetail(FixesRequest $request, $id)
