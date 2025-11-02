@@ -26,7 +26,7 @@
                         <a class="header-nav__link" href="/admin/staff/list">スタッフ一覧</a>
                     </div>
                     <div class="header-nav__item">
-                        <a class="header-nav__link" href="/admin/attendance/{id}">申請一覧</a>
+                        <a class="header-nav__link" href="/stamp_correction_request/list">申請一覧</a>
                     </div>
                     @if (!Auth::check())
                     <div class="header-nav__item">

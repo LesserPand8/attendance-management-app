@@ -8,10 +8,10 @@ use Carbon\Carbon;
 
 class AdminStaffAttendanceListController extends Controller
 {
-    public function staffAttendanceList($staffId)
+    public function staffAttendanceList($id)
     {
         // スタッフ情報を取得
-        $staff = DB::table('users')->where('id', $staffId)->first();
+        $staff = DB::table('users')->where('id', $id)->first();
 
         if (!$staff) {
             abort(404, 'スタッフが見つかりません');
@@ -21,7 +21,7 @@ class AdminStaffAttendanceListController extends Controller
 
         // 今月の勤怠データを取得
         $workRecords = DB::table('works')
-            ->where('user_id', $staffId)
+            ->where('user_id', $id)
             ->whereYear('work_date', $targetDate->year)
             ->whereMonth('work_date', $targetDate->month)
             ->get()
@@ -89,7 +89,7 @@ class AdminStaffAttendanceListController extends Controller
             } else {
                 // 勤怠記録がない日
                 $attendances->push((object)[
-                    'id' => 'new_' . $dateStr, // 日付を含む特別な識別子
+                    'id' => 'new_' . $dateStr . '_' . $id, // 日付とスタッフIDを含む特別な識別子
                     'date' => $dateStr,
                     'start_time' => null,
                     'end_time' => null,

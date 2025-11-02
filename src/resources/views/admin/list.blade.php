@@ -40,7 +40,7 @@
                     {{ $attendance->total_time ?? '' }}
                 </td>
                 <td>
-                    <a class="detail-link" href="/admin/attendance/{{ $attendance->work_id }}">詳細</a>
+                    <a class="detail-link" href="/admin/attendance/{{ $attendance->id }}">詳細</a>
                 </td>
             </tr>
             @endforeach

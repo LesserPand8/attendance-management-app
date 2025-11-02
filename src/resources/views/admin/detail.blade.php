@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('admin.layouts.app')
 
 @section('css')
 <link rel="stylesheet" href="{{ asset('css/admin/detail.css') }}">
@@ -18,7 +18,7 @@
         </div>
         @endif
 
-        <form class="attendance-detail-form" action="/attendance/detail/{{ $attendanceData->id }}" method="post">
+        <form class="attendance-detail-form" action="/admin/attendance/{{ $attendanceData->id }}" method="post">
             @csrf
             <table class="attendance-detail-table">
                 <tr class="attendance-detail-row">

@@ -11,7 +11,15 @@ class ApplicationListController extends Controller
 {
     public function stampCorrectionRequestList(Request $request)
     {
-        $user = Auth::user();
+        // 管理者または一般ユーザーの認証を確認
+        $isAdmin = Auth::guard('admin')->check();
+        $isUser = Auth::guard('web')->check();
+
+        // どちらの認証もない場合はログインページにリダイレクト
+        if (!$isAdmin && !$isUser) {
+            return $isAdmin ? redirect('/admin/login') : redirect('/login');
+        }
+
         $tab = $request->get('tab', 'pending-approval'); // デフォルトは承認待ち
 
         // ステータスによるフィルタリング
@@ -22,11 +30,9 @@ class ApplicationListController extends Controller
             $statusFilter = '承認済み';
         }
 
-        // ログインユーザーの修正申請一覧を取得
         $query = DB::table('fixes')
             ->join('works', 'fixes.work_id', '=', 'works.id')
             ->join('users', 'works.user_id', '=', 'users.id')
-            ->where('fixes.user_id', $user->id)
             ->select(
                 'fixes.id as fix_id',
                 'fixes.work_id',
@@ -38,6 +44,12 @@ class ApplicationListController extends Controller
                 'works.end_time',
                 'users.name as user_name'
             );
+
+        // 管理者の場合は全ての申請を表示、一般ユーザーは自分の申請のみ
+        if (!$isAdmin) {
+            $user = Auth::user();
+            $query->where('fixes.user_id', $user->id);
+        }
 
         // ステータスでフィルタリング
         if ($statusFilter) {
@@ -60,6 +72,8 @@ class ApplicationListController extends Controller
             ]);
         }
 
-        return view('application-list', compact('applications', 'tab'));
+        // 管理者と一般ユーザーで異なるビューを返す
+        $viewName = $isAdmin ? 'admin.application-list' : 'application-list';
+        return view($viewName, compact('applications', 'tab'));
     }
 }

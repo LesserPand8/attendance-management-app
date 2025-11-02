@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\AdminStaffListController;
 use App\Http\Controllers\Admin\AdminAttendanceListController;
 use App\Http\Controllers\Admin\AdminAttendanceDetailController;
 use App\Http\Controllers\Admin\AdminStaffAttendanceListController;
+use App\Http\Controllers\Admin\AdminApprovalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,8 +35,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/attendance/list', [AttendanceListController::class, 'attendanceList']);
     Route::get('/attendance/detail/{id}', [AttendanceDetailController::class, 'attendanceDetail']);
     Route::post('/attendance/detail/{id}', [AttendanceDetailController::class, 'updateAttendanceDetail']);
-    Route::get('/stamp_correction_request/list', [ApplicationListController::class, 'stampCorrectionRequestList']);
 });
+
+// 申請一覧は管理者・一般ユーザー共通パス（認証ミドルウェアで区別）
+Route::get('/stamp_correction_request/list', [ApplicationListController::class, 'stampCorrectionRequestList']);
 
 /*
 |--------------------------------------------------------------------------
@@ -54,8 +57,10 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('attendance/list', [AdminAttendanceListController::class, 'attendanceList'])
             ->name('admin.attendance.list');
         Route::get('attendance/{id}', [AdminAttendanceDetailController::class, 'attendanceDetail']);
+
         Route::post('attendance/{id}', [AdminAttendanceDetailController::class, 'updateAttendanceDetail']);
         Route::get('staff/list', [AdminStaffListController::class, 'staffList']);
-        Route::get('attendance/staff/{staffId}', [AdminStaffAttendanceListController::class, 'staffAttendanceList']);
+        Route::get('attendance/staff/{id}', [AdminStaffAttendanceListController::class, 'staffAttendanceList']);
+        Route::get('/stamp_correction_request/approve/{attendance_correct_request_id}', [AdminApprovalController::class, 'approvalList']);
     });
 });

@@ -64,6 +64,7 @@ class AdminAttendanceListController extends Controller
                 $attendances->push((object)[
                     'user_id' => $user->id,
                     'user_name' => $user->name,
+                    'id' => $work->id,
                     'work_id' => $work->id,
                     'date' => $targetDate->format('Y-m-d'),
                     'start_time' => $work->start_time,
@@ -77,6 +78,7 @@ class AdminAttendanceListController extends Controller
                 $attendances->push((object)[
                     'user_id' => $user->id,
                     'user_name' => $user->name,
+                    'id' => 'new_' . $targetDate->format('Y-m-d') . '_' . $user->id,
                     'work_id' => null,
                     'date' => $targetDate->format('Y-m-d'),
                     'start_time' => null,

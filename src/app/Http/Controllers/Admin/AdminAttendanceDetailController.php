@@ -5,39 +5,47 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
+use App\Http\Requests\FixesRequest;
+use Illuminate\Support\Facades\Log;
+
 
 class AdminAttendanceDetailController extends Controller
 {
     public function attendanceDetail($id)
     {
-        $user = auth()->user();
+        $user = auth('admin')->user();
 
-        // 新しい記録の場合（new_YYYY-MM-DD形式）
+        // 新しい記録の場合（new_YYYY-MM-DD_ユーザーID形式）
         if (str_starts_with($id, 'new_')) {
-            $date = str_replace('new_', '', $id);
+            $parts = explode('_', $id); // new_2025-10-26_1 -> ['new', '2025-10-26', '1']
+            if (count($parts) !== 3) {
+                return redirect('/admin/attendance/list')->with('error', '無効なIDです');
+            }
+
+            $date = $parts[1];
+            $userId = $parts[2];
 
             // 日付形式の検証
             try {
                 $targetDate = Carbon::parse($date);
             } catch (\Exception $e) {
-                return redirect('/attendance/list')->with('error', '無効な日付です');
+                return redirect('/admin/attendance/list')->with('error', '無効な日付です');
             }
 
             // 該当日の既存記録を確認
             $existingWork = DB::table('works')
-                ->where('user_id', $user->id)
+                ->where('user_id', $userId)
                 ->where('work_date', $targetDate->format('Y-m-d'))
                 ->first();
 
             if ($existingWork) {
                 // 既存記録がある場合は通常の詳細ページにリダイレクト
-                return redirect('/attendance/detail/' . $existingWork->id);
+                return redirect('/admin/attendance/' . $existingWork->id);
             }
 
             // 新しい記録を作成
             $workId = DB::table('works')->insertGetId([
-                'user_id' => $user->id,
+                'user_id' => $userId,
                 'work_date' => $targetDate->format('Y-m-d'),
                 'start_time' => null,
                 'end_time' => null,
@@ -60,7 +68,7 @@ class AdminAttendanceDetailController extends Controller
                 ->first();
 
             if (!$attendance) {
-                return redirect('/attendance/list')->with('error', '勤怠記録が見つかりません');
+                return redirect('/admin/attendance/list')->with('error', '勤怠記録が見つかりません');
             }
         }
 
@@ -105,27 +113,42 @@ class AdminAttendanceDetailController extends Controller
             'total_break_time' => $totalBreakTime
         ];
 
-        return view('admin.attendance_detail', compact('attendanceData', 'hasPendingFix', 'pendingFix'));
+        return view('admin.detail', compact('attendanceData', 'hasPendingFix', 'pendingFix'));
     }
 
-    public function updateAttendanceDetail(Request $request, $id)
+    public function updateAttendanceDetail(FixesRequest $request, $id)
     {
-        // バリデーション
-        $request->validate([
-            'start_time' => 'nullable|date_format:H:i',
-            'end_time' => 'nullable|date_format:H:i',
-            'reason' => 'required|string',
-        ], [
-            'start_time.date_format' => '出勤時間は○○:○○の形式で入力してください',
-            'end_time.date_format' => '退勤時間は○○:○○の形式で入力してください',
-            'reason.required' => '備考を記入してください',
-        ]);
+        $user = auth('admin')->user();
 
-        // 勤怠記録を取得
-        $attendance = DB::table('works')->where('id', $id)->first();
+        // 新しい記録の場合（new_YYYY-MM-DD_ユーザーID形式）の処理
+        if (str_starts_with($id, 'new_')) {
+            $parts = explode('_', $id); // new_2025-10-26_1 -> ['new', '2025-10-26', '1']
+            if (count($parts) !== 3) {
+                return redirect('/admin/attendance/list')->with('error', '無効なIDです');
+            }
 
-        if (!$attendance) {
-            return redirect('/admin/attendance/list')->with('error', '勤怠記録が見つかりません');
+            $date = $parts[1];
+            $userId = $parts[2];
+
+            // 該当日の既存記録を取得（作成済みの場合）
+            $attendance = DB::table('works')
+                ->where('user_id', $userId)
+                ->where('work_date', $date)
+                ->first();
+
+            if (!$attendance) {
+                return redirect('/admin/attendance/list')->with('error', '勤怠記録が見つかりません');
+            }
+
+            // 実際のIDに変更して処理を続行
+            $id = $attendance->id;
+        } else {
+            // 既存記録の場合
+            $attendance = DB::table('works')->where('id', $id)->first();
+
+            if (!$attendance) {
+                return redirect('/admin/attendance/list')->with('error', '勤怠記録が見つかりません');
+            }
         }
 
         DB::beginTransaction();
@@ -139,62 +162,85 @@ class AdminAttendanceDetailController extends Controller
                 $workUpdates['end_time'] = Carbon::parse($attendance->work_date . ' ' . $request->end_time)->toDateTimeString();
             }
 
-            // 出勤・退勤時間を更新
+            // 出勤・退勤時間を更新（修正がある場合のみ）
             if (!empty($workUpdates)) {
-                $workUpdates['updated_at'] = now();
                 DB::table('works')->where('id', $id)->update($workUpdates);
             }
 
-            // 休憩時間の処理
-            $this->updateBreakTimes($request, $id, $attendance->work_date);
+            // 既存の休憩時間の更新または削除
+            $breaks = DB::table('breakings')->where('work_id', $id)->get();
 
-            // 管理者による直接修正は承認不要で即座に反映
+            foreach ($breaks as $break) {
+                $startInputName = 'break_start_' . $break->id;
+                $endInputName = 'break_end_' . $break->id;
+
+                $startTime = $request->input($startInputName);
+                $endTime = $request->input($endInputName);
+
+                // 両方の値が空の場合は休憩時間を削除
+                if (empty($startTime) && empty($endTime)) {
+                    DB::table('breakings')->where('id', $break->id)->delete();
+                }
+                // 両方の値がある場合は更新
+                elseif ($startTime && $endTime) {
+                    DB::table('breakings')
+                        ->where('id', $break->id)
+                        ->update([
+                            'start_time' => Carbon::parse($attendance->work_date . ' ' . $startTime)->toDateTimeString(),
+                            'end_time' => Carbon::parse($attendance->work_date . ' ' . $endTime)->toDateTimeString(),
+                        ]);
+                }
+                // 片方だけ空の場合はエラーとして扱う（不正な状態）
+            }
+
+            // 新しい休憩時間の追加（break_start_1, break_start_2 など）
+            for ($i = 1; $i <= 10; $i++) { // 最大10個まで確認
+                $startFieldName = "break_start_{$i}";
+                $endFieldName = "break_end_{$i}";
+
+                if ($request->filled($startFieldName) && $request->filled($endFieldName)) {
+                    $startTime = $request->input($startFieldName);
+                    $endTime = $request->input($endFieldName);
+
+                    // 既存の休憩時間と重複しないかチェック
+                    $existingBreak = DB::table('breakings')
+                        ->where('work_id', $id)
+                        ->where('start_time', Carbon::parse($attendance->work_date . ' ' . $startTime)->toDateTimeString())
+                        ->where('end_time', Carbon::parse($attendance->work_date . ' ' . $endTime)->toDateTimeString())
+                        ->first();
+
+                    if (!$existingBreak) {
+                        DB::table('breakings')->insertGetId([
+                            'user_id' => $attendance->user_id,
+                            'work_id' => $id,
+                            'start_time' => Carbon::parse($attendance->work_date . ' ' . $startTime)->toDateTimeString(),
+                            'end_time' => Carbon::parse($attendance->work_date . ' ' . $endTime)->toDateTimeString(),
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+                    }
+                }
+            }
+
+            // fixesテーブルに修正申請を登録
+            $fixData = [
+                'user_id' => $attendance->user_id,
+                'work_id' => $id,
+                'fix_date' => now()->toDateString(), // 修正申請した日付（今日）
+                'reason' => $request->input('reason', '修正申請'),
+                'status' => '承認待ち',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+
+            DB::table('fixes')->insertGetId($fixData);
+
             DB::commit();
-            return redirect('/admin/attendance/' . $id)->with('success', '勤怠記録を修正しました。');
+            return redirect('/admin/attendance/' . $id)->with('success', '修正申請が送信されました。承認待ち状態となります。');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect('/admin/attendance/' . $id)->with('error', '勤怠記録の修正に失敗しました。');
-        }
-    }
-
-    private function updateBreakTimes(Request $request, $workId, $workDate)
-    {
-        // 既存の休憩時間を更新
-        $existingBreaks = DB::table('breakings')->where('work_id', $workId)->get();
-
-        foreach ($existingBreaks as $break) {
-            $startInputName = 'break_start_' . $break->id;
-            $endInputName = 'break_end_' . $break->id;
-
-            $breakStart = $request->input($startInputName);
-            $breakEnd = $request->input($endInputName);
-
-            if ($breakStart && $breakEnd) {
-                DB::table('breakings')->where('id', $break->id)->update([
-                    'start_time' => Carbon::parse($workDate . ' ' . $breakStart)->toDateTimeString(),
-                    'end_time' => Carbon::parse($workDate . ' ' . $breakEnd)->toDateTimeString(),
-                    'updated_at' => now(),
-                ]);
-            } elseif (!$breakStart && !$breakEnd) {
-                // 両方が空の場合は削除
-                DB::table('breakings')->where('id', $break->id)->delete();
-            }
-        }
-
-        // 新しい休憩時間を追加
-        for ($i = 1; $i <= 10; $i++) {
-            $breakStart = $request->input("break_start_{$i}");
-            $breakEnd = $request->input("break_end_{$i}");
-
-            if ($breakStart && $breakEnd) {
-                DB::table('breakings')->insert([
-                    'work_id' => $workId,
-                    'start_time' => Carbon::parse($workDate . ' ' . $breakStart)->toDateTimeString(),
-                    'end_time' => Carbon::parse($workDate . ' ' . $breakEnd)->toDateTimeString(),
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
+            Log::error('Attendance update failed:', ['error' => $e->getMessage(), 'work_id' => $id]);
+            return redirect('/admin/attendance/' . $id)->with('error', '修正申請の送信に失敗しました。');
         }
     }
 }
