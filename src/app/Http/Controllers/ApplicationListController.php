@@ -64,6 +64,7 @@ class ApplicationListController extends Controller
         foreach ($fixes as $fix) {
             $applications->push((object)[
                 'id' => $fix->work_id, // 勤怠詳細ページへのリンク用
+                'fix_id' => $fix->fix_id,
                 'user_name' => $fix->user_name,
                 'date' => Carbon::parse($fix->work_date)->format('Y-m-d'),
                 'reason' => $fix->reason,

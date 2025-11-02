@@ -61,6 +61,10 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('attendance/{id}', [AdminAttendanceDetailController::class, 'updateAttendanceDetail']);
         Route::get('staff/list', [AdminStaffListController::class, 'staffList']);
         Route::get('attendance/staff/{id}', [AdminStaffAttendanceListController::class, 'staffAttendanceList']);
-        Route::get('/stamp_correction_request/approve/{attendance_correct_request_id}', [AdminApprovalController::class, 'approvalList']);
     });
+});
+
+// 申請承認ページ（管理者のみアクセス可能）
+Route::middleware(['auth:admin'])->group(function () {
+    Route::get('/stamp_correction_request/approve/{attendance_correct_request_id}', [AdminApprovalController::class, 'approvalDetail']);
 });

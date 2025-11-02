@@ -30,7 +30,7 @@
                     <td>{{ \Carbon\Carbon::parse($application->date)->format('Y/m/d') }}</td>
                     <td>{{ $application->reason }}</td>
                     <td>{{ \Carbon\Carbon::parse($application->fix_date)->format('Y/m/d') }}</td>
-                    <td><a class="detail-link" href="/stamp_correction_request/approve/{attendance_correct_request_id}">詳細</a></td>
+                    <td><a class="detail-link" href="/stamp_correction_request/approve/{{ $application->fix_id }}">詳細</a></td>
                 </tr>
                 @endforeach
             </table>
