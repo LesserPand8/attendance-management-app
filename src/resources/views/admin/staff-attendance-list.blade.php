@@ -46,7 +46,7 @@
             @endforeach
         </table>
         <output>
-
+            <button type="submit" class="submit-button">CSV出力</button>
         </output>
     </div>
 </div>

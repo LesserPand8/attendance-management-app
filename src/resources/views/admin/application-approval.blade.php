@@ -8,7 +8,7 @@
 <div class="content">
     <div class="detail">
         <h2 class="detail-title">勤怠詳細</h2>
-        <form class="attendance-detail-form" action="/stamp_correction_request/approve/{attendance_correct_request_id}" method="post">
+        <form class="attendance-detail-form" action="/stamp_correction_request/approve/{{ $attendance_correct_request_id }}" method="post">
             @csrf
             <table class="attendance-detail-table">
                 <tr class="attendance-detail-row">
@@ -40,7 +40,7 @@
                 <tr class="attendance-detail-row">
                     <th>休憩{{ $break['number'] > 1 ? $break['number'] : '' }}</th>
                     <td>
-                        @if($hasPendingFix)
+                        @if($pendingFix && $pendingFix->reason)
                         <div class="time-container">
                             <div class="time-display_start">{{ \Carbon\Carbon::parse($break['start'])->format('H:i') }}</div>
                             ～
@@ -50,19 +50,26 @@
                     </td>
                 </tr>
                 @endforeach
+                <tr class="attendance-detail-row">
+                    <th>休憩{{ count($attendanceData->break_times) + 1 }}</th>
+                    <td>
+                    </td>
+                </tr>
                 <tr class="comment-row">
                     <th>備考</th>
                     <td>
+                        @if($pendingFix && $pendingFix->reason)
                         <div class="pending-reason-container">
                             <div class="pending-reason">{{ $pendingFix->reason }}</div>
                         </div>
+                        @endif
                     </td>
                 </tr>
             </table>
-            @if(!$hasPendingFix)
-            <button type="submit" class="submit-button">修正</button>
+            @if($hasPendingFix)
+            <button type="submit" class="submit-button">承認</button>
             @else
-            <div class="pending-message">*承認待ちのため修正できません。</div>
+            <div class="approved-button">承認済み</div>
             @endif
         </form>
     </div>

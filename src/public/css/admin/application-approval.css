@@ -114,6 +114,20 @@ th {
     align-self: flex-end;
 }
 
+.approved-button {
+    margin: 30px 0 30px auto;
+    width: 120px;
+    font-family: Inter;
+    font-weight: 700;
+    font-size: 18px;
+    color: #ffffff;
+    background-color: #696969;
+    border-radius: 5px;
+    padding: 5px 0;
+    align-self: flex-end;
+    text-align: center;
+}
+
 .error-message {
     color: #ff000080;
 }
@@ -137,4 +151,8 @@ th {
 
 .time-display_end {
     padding-left: 60px;
+}
+
+.pending-reason {
+    padding-left: 20px;
 }

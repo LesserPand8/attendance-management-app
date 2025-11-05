@@ -67,4 +67,5 @@ Route::group(['prefix' => 'admin'], function () {
 // 申請承認ページ（管理者のみアクセス可能）
 Route::middleware(['auth:admin'])->group(function () {
     Route::get('/stamp_correction_request/approve/{attendance_correct_request_id}', [AdminApprovalController::class, 'approvalDetail']);
+    Route::post('/stamp_correction_request/approve/{attendance_correct_request_id}', [AdminApprovalController::class, 'approval']);
 });

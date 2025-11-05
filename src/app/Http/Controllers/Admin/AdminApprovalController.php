@@ -62,8 +62,28 @@ class AdminApprovalController extends Controller
 
         // 承認待ちかどうか
         $hasPendingFix = $fix->status === '承認待ち';
-        $pendingFix = $hasPendingFix ? $fix : null;
+        $pendingFix = $fix; // 承認待ち・承認済み関係なく申請データを渡す
 
         return view('admin.application-approval', compact('attendance_correct_request_id', 'attendanceData', 'hasPendingFix', 'pendingFix'));
+    }
+
+    public function approval($attendance_correct_request_id)
+    {
+        // 修正申請を取得
+        $fix = DB::table('fixes')->where('id', $attendance_correct_request_id)->first();
+
+        if (!$fix) {
+            return redirect('/stamp_correction_request/list')->with('error', '申請が見つかりません');
+        }
+
+        // ステータスを「承認済み」に更新
+        DB::table('fixes')
+            ->where('id', $attendance_correct_request_id)
+            ->update([
+                'status' => '承認済み',
+                'updated_at' => now()
+            ]);
+
+        return redirect('/stamp_correction_request/list')->with('success', '申請を承認しました');
     }
 }
