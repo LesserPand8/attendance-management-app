@@ -46,7 +46,7 @@
             @endforeach
         </table>
         <output>
-            <button type="submit" class="submit-button">CSV出力</button>
+            <a href="/admin/attendance/staff/{{ $staff->id }}/csv?month={{ $currentMonth }}" class="submit-button">CSV出力</a>
         </output>
     </div>
 </div>

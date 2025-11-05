@@ -61,6 +61,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('attendance/{id}', [AdminAttendanceDetailController::class, 'updateAttendanceDetail']);
         Route::get('staff/list', [AdminStaffListController::class, 'staffList']);
         Route::get('attendance/staff/{id}', [AdminStaffAttendanceListController::class, 'staffAttendanceList']);
+        Route::get('attendance/staff/{id}/csv', [AdminStaffAttendanceListController::class, 'exportCsv']);
     });
 });
 

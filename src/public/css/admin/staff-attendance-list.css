@@ -114,3 +114,21 @@ td {
     text-decoration: none;
     color: #000000;
 }
+
+output {
+    display: block;
+    text-align: right;
+}
+
+.submit-button {
+    display: inline-block;
+    background-color: #000000;
+    color: #ffffff;
+    font-family: Inter;
+    font-weight: 700;
+    font-size: 16px;
+    padding: 5px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    margin: 40px 0 20px 0;
+}
