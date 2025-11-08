@@ -28,7 +28,7 @@ use App\Http\Controllers\Admin\AdminApprovalController;
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [AttendanceController::class, 'attendance']);
     Route::get('/attendance', [AttendanceController::class, 'attendance']);
     Route::post('/attendance', [AttendanceController::class, 'registerAttendance']);
@@ -37,8 +37,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/attendance/detail/{id}', [AttendanceDetailController::class, 'updateAttendanceDetail']);
 });
 
-// 申請一覧は管理者・一般ユーザー共通パス（認証ミドルウェアで区別）
-Route::get('/stamp_correction_request/list', [ApplicationListController::class, 'stampCorrectionRequestList']);
+// 申請一覧（管理者と一般ユーザーで共通、一般ユーザーはメール認証必須）
+Route::get('/stamp_correction_request/list', [ApplicationListController::class, 'stampCorrectionRequestList'])
+    ->middleware(['auth']);
 
 /*
 |--------------------------------------------------------------------------

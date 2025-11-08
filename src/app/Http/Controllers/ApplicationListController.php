@@ -20,6 +20,14 @@ class ApplicationListController extends Controller
             return $isAdmin ? redirect('/admin/login') : redirect('/login');
         }
 
+        // 一般ユーザーの場合はメール認証を確認
+        if ($isUser && !$isAdmin) {
+            $user = Auth::user();
+            if (is_null($user->email_verified_at)) {
+                return redirect()->route('verification.notice');
+            }
+        }
+
         $tab = $request->get('tab', 'pending-approval'); // デフォルトは承認待ち
 
         // ステータスによるフィルタリング

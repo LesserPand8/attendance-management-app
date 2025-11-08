@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('auth.layouts.app')
 
 @section('css')
 <link rel="stylesheet" href="{{ asset('css/auth/verify.css') }}">
