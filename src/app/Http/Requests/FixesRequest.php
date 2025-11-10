@@ -27,8 +27,8 @@ class FixesRequest extends FormRequest
     {
         return [
             'reason' => 'required|string',
-            'start_time' => 'nullable|date_format:H:i',
-            'end_time' => 'nullable|date_format:H:i',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i',
         ];
     }
 
@@ -41,9 +41,10 @@ class FixesRequest extends FormRequest
     {
         return [
             'reason.required' => '備考を記入してください',
+            'start_time.required' => '出勤時間もしくは退勤時間が不適切な値です',
+            'end_time.required' => '出勤時間もしくは退勤時間が不適切な値です',
             'start_time.date_format' => '出勤時間は○○:○○の形式で入力してください',
             'end_time.date_format' => '退勤時間は○○:○○の形式で入力してください',
-            '*.date_format' => '時間は○○:○○の形式で入力してください',
         ];
     }
 
@@ -69,12 +70,6 @@ class FixesRequest extends FormRequest
         $startTime = $this->input('start_time');
         $endTime = $this->input('end_time');
 
-        // 片方だけ入力されている場合のチェック
-        if (($startTime && !$endTime) || (!$startTime && $endTime)) {
-            $validator->errors()->add('work_time', '時間が入力されていません');
-            return;
-        }
-
         if ($startTime && $endTime) {
             try {
                 $start = Carbon::createFromFormat('H:i', $startTime);
@@ -82,10 +77,12 @@ class FixesRequest extends FormRequest
 
                 // 1. 出勤時間が退勤時間より後、または退勤時間が出勤時間より前
                 if ($start->greaterThanOrEqualTo($end)) {
-                    $validator->errors()->add('work_time', '出勤時間が不適切な値です');
+                    $validator->errors()->add('start_time', '出勤時間もしくは退勤時間が不適切な値です');
+                    $validator->errors()->add('end_time', '出勤時間もしくは退勤時間が不適切な値です');
                 }
             } catch (\Exception $e) {
-                $validator->errors()->add('work_time', '時間は○○:○○の形式で入力してください');
+                $validator->errors()->add('start_time', '出勤時間は○○:○○の形式で入力してください');
+                $validator->errors()->add('end_time', '退勤時間は○○:○○の形式で入力してください');
             }
         }
     }
@@ -160,23 +157,21 @@ class FixesRequest extends FormRequest
 
             // 2. 休憩開始時間が出勤時間より前、または退勤時間より後
             if ($breakStartTime->lessThan($workStart) || $breakStartTime->greaterThan($workEnd)) {
-                $validator->errors()->add('break_time', '休憩時間が不適切な値です');
-                return;
+                $validator->errors()->add('break_start', '休憩時間が不適切な値です');
             }
 
             // 3. 休憩終了時間が退勤時間より後
             if ($breakEndTime->greaterThan($workEnd)) {
-                $validator->errors()->add('break_time', '休憩時間もしくは退勤時間が不適切な値です');
-                return;
+                $validator->errors()->add('break_end', '休憩時間もしくは退勤時間が不適切な値です');
             }
 
             // 休憩開始時間が休憩終了時間より後
             if ($breakStartTime->greaterThanOrEqualTo($breakEndTime)) {
-                $validator->errors()->add('break_time', '休憩時間が不適切な値です');
-                return;
+                $validator->errors()->add('break_start', '休憩時間が不適切な値です');
             }
         } catch (\Exception $e) {
-            $validator->errors()->add('break_time', '時間は○○:○○の形式で入力してください');
+            $validator->errors()->add('break_start', '時間は○○:○○の形式で入力してください');
+            $validator->errors()->add('break_end', '時間は○○:○○の形式で入力してください');
         }
     }
 }

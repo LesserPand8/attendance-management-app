@@ -236,10 +236,10 @@ colors="true"
         <server name="APP_ENV" value="testing"/>
         <server name="BCRYPT_ROUNDS" value="4"/>
         <server name="CACHE_DRIVER" value="array"/>
--         <!-- <server name="DB_CONNECTION" value="sqlite"/> -->
--         <!-- <server name="DB_DATABASE" value=":memory:"/> -->
-+         <server name="DB_CONNECTION" value="mysql_test"/>
-+         <server name="DB_DATABASE" value="demo_test"/>
+        <!-- <server name="DB_CONNECTION" value="sqlite"/> -->
+        <!-- <server name="DB_DATABASE" value=":memory:"/> -->
+        <server name="DB_CONNECTION" value="mysql_test"/>
+        <server name="DB_DATABASE" value="demo_test"/>
         <server name="MAIL_MAILER" value="array"/>
         <server name="QUEUE_CONNECTION" value="sync"/>
         <server name="SESSION_DRIVER" value="array"/>
@@ -247,8 +247,6 @@ colors="true"
     </php>
 </phpunit>
 ```
-
-※.env.testing にも Stripe の API キーを設定してください。
 
 **テスト実行**
 
