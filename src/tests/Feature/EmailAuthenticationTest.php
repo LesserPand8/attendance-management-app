@@ -8,6 +8,11 @@ use Tests\TestCase;
 
 class EmailAuthenticationTest extends TestCase
 {
+    /**
+     * A basic feature test example.
+     *
+     * @return void
+     */
     use RefreshDatabase;
 
     /**
@@ -25,7 +30,7 @@ class EmailAuthenticationTest extends TestCase
             'password_confirmation' => 'password123',
         ];
         $response = $this->post('/register', $userData);
-        $response->assertRedirect('/email/verify');
+        $response->assertRedirect('/attendance');
 
         // 2. 認証通知が送信されたことを検証
         $user = \App\Models\User::where('email', $userData['email'])->first();
@@ -54,9 +59,9 @@ class EmailAuthenticationTest extends TestCase
     }
 
     /**
-     * メール認証サイトで認証を完了するとプロフィール設定画面に遷移するテスト
+     * メール認証サイトで認証を完了すると勤怠登録画面に遷移するテスト
      */
-    public function test_complete_email_verification_redirects_to_profile_setting()
+    public function test_complete_email_verification_redirects_to_attendance_registration()
     {
         // 未認証ユーザー作成
         $user = \App\Models\User::factory()->create([
@@ -70,7 +75,6 @@ class EmailAuthenticationTest extends TestCase
         $url = \Illuminate\Support\Facades\URL::signedRoute('verification.verify', ['id' => $id, 'hash' => $hash]);
         $response = $this->get($url);
 
-        // プロフィール設定画面へリダイレクト
-        $response->assertRedirect('/mypage/profile');
+        $response->assertRedirect('/attendance?verified=1');
     }
 }
