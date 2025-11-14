@@ -53,7 +53,6 @@ Route::group(['prefix' => 'admin'], function () {
 
     // 以下の中は認証必須のエンドポイントとなる
     Route::middleware(['auth:admin'])->group(function () {
-        // ログアウト
         Route::post('logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
         Route::get('attendance/list', [AdminAttendanceListController::class, 'attendanceList'])
             ->name('admin.attendance.list');
