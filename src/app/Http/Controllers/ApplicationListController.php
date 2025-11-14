@@ -17,7 +17,9 @@ class ApplicationListController extends Controller
 
         // どちらの認証もない場合はログインページにリダイレクト
         if (!$isAdmin && !$isUser) {
-            return $isAdmin ? redirect('/admin/login') : redirect('/login');
+            // 管理者用のURLからアクセスされた場合は管理者ログインへ
+            // それ以外は一般ユーザーログインへ
+            return redirect('/login');
         }
 
         // 一般ユーザーの場合はメール認証を確認

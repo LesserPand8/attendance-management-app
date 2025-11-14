@@ -37,9 +37,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/attendance/detail/{id}', [AttendanceDetailController::class, 'updateAttendanceDetail']);
 });
 
-// 申請一覧（管理者と一般ユーザーで共通、一般ユーザーはメール認証必須）
-Route::get('/stamp_correction_request/list', [ApplicationListController::class, 'stampCorrectionRequestList'])
-    ->middleware(['auth']);
+// 申請一覧（管理者と一般ユーザーで共通）
+Route::get('/stamp_correction_request/list', [ApplicationListController::class, 'stampCorrectionRequestList']);
 
 /*
 |--------------------------------------------------------------------------
