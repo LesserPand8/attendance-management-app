@@ -132,7 +132,7 @@ password: admintest
 ```bash
 docker-compose exec mysql bash
 mysql -u root -p
-create database demo_database;
+create database demo_test;
 exit
 exit
 ```
