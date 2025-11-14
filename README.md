@@ -138,7 +138,8 @@ exit
 ```
 
 2. config ファイルの変更<br>
-   config ディレクトリの中の database.php を開き、mysql の配列部分をコピーして以下に新たに mysql_test を作成する
+   config ディレクトリの中の database.php を開き、mysql_test が以下のようになっていることを確認する<br>
+   ※無い場合は mysql の配列部分をコピーして以下に新たに mysql_test を作成する
 
 ```text
 'mysql' => [
@@ -210,7 +211,8 @@ php artisan migrate --env=testing
 ```
 
 9. phpunit の編集<br>
-   プロジェクトの直下の phpunit.xml を開き、DB_CONNECTION と DB_DATABASE を以下のように変更する
+   プロジェクトの直下の phpunit.xml を開き、DB_CONNECTION と DB_DATABASE を以下のようになっていることを確認する<br>
+   なっていない場合は変更する
 
 ```text
 <?xml version="1.0" encoding="UTF-8"?>
